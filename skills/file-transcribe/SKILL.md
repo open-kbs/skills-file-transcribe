@@ -63,6 +63,15 @@ WHISPER_LANG=en node .agents/skills/file-transcribe/transcribe.mjs .uploads/podc
 ## Workflow
 
 1. Verify the input file exists (check `.uploads/` or the path the user specified)
-2. Run the transcription command
-3. Read the output file and present the transcript to the user
-4. If the user wants, save/move the transcript to a specific location
+2. Run the transcription command to produce the raw transcript
+3. Read the raw transcript and perform a refinement pass:
+
+### Step 3: Refinement
+
+After getting the raw transcript, you MUST read it and produce a polished version by fixing two things:
+
+**A. Error correction** — Whisper mishears words, drops phrases, or garbles domain-specific terms. Analyze the full context of the conversation to infer what was actually said. For example, if the topic is clearly about databases and Whisper wrote "post-Greece queue well", that's "PostgreSQL". Fix these errors in-place while preserving the original meaning.
+
+**B. Speaker identification** — Whisper does not label speakers. You must identify distinct speakers and label them. Use contextual clues: question→answer patterns, "I"/"you" shifts, topic ownership, speaking style differences. Label as `Speaker 1:`, `Speaker 2:`, etc. If names are mentioned in the conversation, use actual names instead.
+
+Write the polished transcript to a separate file (e.g. `transcript_final.txt`) and keep the raw version for reference. Present the final version to the user.
