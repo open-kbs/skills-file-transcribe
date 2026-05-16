@@ -57,8 +57,10 @@ WHISPER_LANG=en node .agents/skills/file-transcribe/transcribe.mjs .uploads/podc
 
 ## Requirements
 
-- `ffmpeg` must be installed (available in Studio containers)
-- Hosted platform only (needs `SERVER_URL` and `KB_ID`)
+- `ffmpeg` must be installed
+- One of:
+  - **OpenKBS Studio** — works automatically (SERVER_URL + KB_ID are set by the container)
+  - **OPENAI_KEY** — set this env var for direct OpenAI Whisper access outside of Studio
 
 ## Workflow
 
