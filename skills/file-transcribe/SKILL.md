@@ -85,7 +85,7 @@ Once the refined transcript is ready, present the user with two options using As
 
 ### Step 5a: Q&A path (if chosen)
 
-Analyze the transcript for ambiguities, contradictions, missing details, or things that look like transcription errors. Ask the user all clarifying questions. Do not proceed until all questions are answered. Then enter plan mode and produce the Requirement Specification.
+Enter plan mode FIRST, then conduct the Q&A inside plan mode. Analyze the transcript for ambiguities, contradictions, missing details, or things that look like transcription errors. Ask questions ONE AT A TIME — ask one question, wait for the user's answer, then use that answer as context for the next question. Do not batch multiple questions. Each subsequent question should be informed by all previous answers. Continue until all ambiguities are resolved. Then produce the Requirement Specification.
 
 ### Step 5b: Direct path (if chosen)
 
