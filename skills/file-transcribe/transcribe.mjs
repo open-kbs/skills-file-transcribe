@@ -203,17 +203,15 @@ async function transcribeBatched(items, transcribeFn) {
 
 async function main() {
   const timestamp = Date.now();
+  const tmpRelDir = `_tmp/transcribe-${timestamp}`;
   const workDir = path.join(os.tmpdir(), `transcribe-${timestamp}`);
   let proxyTmpDir = null;
 
   if (useProxy) {
-    const tmpRelDir = `_tmp/transcribe-${timestamp}`;
     proxyTmpDir = path.join(PROJECT_DIR, 'site', tmpRelDir);
     fs.mkdirSync(proxyTmpDir, { recursive: true });
   }
   fs.mkdirSync(workDir, { recursive: true });
-
-  const tmpDir = proxyTmpDir || workDir;
 
   try {
     let audioPath = absInput;
@@ -243,9 +241,7 @@ async function main() {
       if (useProxy) {
         const jwt = readProjectJWT();
         const destName = 'audio.mp3';
-        const destPath = path.join(proxyTmpDir, destName);
-        fs.copyFileSync(audioPath, destPath);
-        const tmpRelDir = `_tmp/transcribe-${timestamp}`;
+        fs.copyFileSync(audioPath, path.join(proxyTmpDir, destName));
         const url = buildPublicUrl(`${tmpRelDir}/${destName}`);
         fullText = await transcribeViaProxy(url, jwt);
       } else {
@@ -261,7 +257,6 @@ async function main() {
 
       if (useProxy) {
         const jwt = readProjectJWT();
-        const tmpRelDir = `_tmp/transcribe-${timestamp}`;
         const proxyChunksDir = path.join(proxyTmpDir, 'chunks');
         fs.mkdirSync(proxyChunksDir, { recursive: true });
         for (const f of chunkFiles) {
