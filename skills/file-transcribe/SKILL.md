@@ -19,7 +19,7 @@ Use this skill when the user asks to:
 ## Command
 
 ```bash
-node .agents/skills/file-transcribe/transcribe.mjs <input-file> [output.txt]
+node .claude/skills/file-transcribe/transcribe.mjs <input-file> [output.txt]
 ```
 
 - `<input-file>` — path to audio or video file (required)
@@ -29,13 +29,13 @@ node .agents/skills/file-transcribe/transcribe.mjs <input-file> [output.txt]
 
 ```bash
 # Transcribe an uploaded MP3 (language auto-detected)
-node .agents/skills/file-transcribe/transcribe.mjs .uploads/meeting.mp3
+node .claude/skills/file-transcribe/transcribe.mjs .uploads/meeting.mp3
 
 # Transcribe a video with custom output path
-node .agents/skills/file-transcribe/transcribe.mjs .uploads/lecture.mp4 lecture_transcript.txt
+node .claude/skills/file-transcribe/transcribe.mjs .uploads/lecture.mp4 lecture_transcript.txt
 
 # Force a specific language hint
-WHISPER_LANG=en node .agents/skills/file-transcribe/transcribe.mjs .uploads/podcast.mp3
+WHISPER_LANG=en node .claude/skills/file-transcribe/transcribe.mjs .uploads/podcast.mp3
 ```
 
 ## Environment variables (optional)
