@@ -79,3 +79,12 @@ Write the polished transcript to a separate file (e.g. `transcript_final.txt`) a
 ### Step 4: Offer next steps
 
 After presenting the final transcript, ask the user if they would like you to generate a Requirement Specification document from the conversation.
+
+### Step 5: Requirement Specification (if user agrees)
+
+If the user wants a Requirement Specification:
+
+1. Enter plan mode
+2. Analyze the transcript for ambiguities, contradictions, or gaps — ask the user clarifying questions before writing anything
+3. Once clarifications are resolved, produce a structured Requirement Specification document covering: objectives, functional requirements, non-functional requirements, constraints, and acceptance criteria
+4. Save as `requirements.md` (or a name the user prefers)
