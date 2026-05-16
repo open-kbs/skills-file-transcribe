@@ -75,3 +75,7 @@ After getting the raw transcript, you MUST read it and produce a polished versio
 **B. Speaker identification** — Whisper does not label speakers. You must identify distinct speakers and label them. Use contextual clues: question→answer patterns, "I"/"you" shifts, topic ownership, speaking style differences. Label as `Speaker 1:`, `Speaker 2:`, etc. If names are mentioned in the conversation, use actual names instead.
 
 Write the polished transcript to a separate file (e.g. `transcript_final.txt`) and keep the raw version for reference. Present the final version to the user.
+
+### Step 4: Offer next steps
+
+After presenting the final transcript, ask the user if they would like you to extract requirements, action items, or a summary from the conversation.
