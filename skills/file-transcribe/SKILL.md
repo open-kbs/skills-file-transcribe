@@ -76,10 +76,21 @@ After getting the raw transcript, you MUST read it and produce a polished versio
 
 Write the polished transcript to a separate file (e.g. `transcript_final.txt`) and keep the raw version for reference. Present the final version to the user.
 
-### Step 4: Clarifying questions
+### Step 4: Choose path
 
-Once the refined transcript is ready, analyze it for ambiguities, contradictions, missing details, or unclear requirements. Ask the user all clarifying questions needed to fill in the gaps. Do not proceed until all questions are answered.
+Once the refined transcript is ready, present the user with two options using AskUserQuestion:
 
-### Step 5: Requirement Specification
+- **Q&A then Requirement Specification (Recommended)** — Ask clarifying questions first to resolve ambiguities, Whisper errors, and missing details, then generate the specification
+- **Direct Requirement Specification** — Generate the specification immediately from the transcript as-is
 
-After all clarifications are resolved, enter plan mode and produce a structured Requirement Specification document covering: objectives, functional requirements, non-functional requirements, constraints, and acceptance criteria. Save as `requirements.md` (or a name the user prefers).
+### Step 5a: Q&A path (if chosen)
+
+Analyze the transcript for ambiguities, contradictions, missing details, or things that look like transcription errors. Ask the user all clarifying questions. Do not proceed until all questions are answered. Then enter plan mode and produce the Requirement Specification.
+
+### Step 5b: Direct path (if chosen)
+
+Enter plan mode and produce the Requirement Specification directly from the refined transcript.
+
+### Requirement Specification format
+
+The document should cover: objectives, functional requirements, non-functional requirements, constraints, and acceptance criteria. Save as `requirements.md` (or a name the user prefers).
