@@ -76,15 +76,11 @@ After getting the raw transcript, you MUST read it and produce a polished versio
 
 Write the polished transcript to a separate file (e.g. `transcript_final.txt`) and keep the raw version for reference. Present the final version to the user.
 
-### Step 4: Offer next steps
+### Step 4: Requirement Specification
 
-After presenting the final transcript, ask the user if they would like you to generate a Requirement Specification document from the conversation.
+Once the refined transcript is ready, proceed directly to generating a Requirement Specification:
 
-### Step 5: Requirement Specification (if user agrees)
-
-If the user wants a Requirement Specification:
-
-1. First, analyze the transcript and identify ambiguities, contradictions, missing details, or unclear requirements
+1. Analyze the transcript and identify ambiguities, contradictions, missing details, or unclear requirements
 2. Ask the user clarifying questions to fill in the gaps — do not proceed until all questions are answered
 3. Then enter plan mode and produce a structured Requirement Specification document covering: objectives, functional requirements, non-functional requirements, constraints, and acceptance criteria
 4. Save as `requirements.md` (or a name the user prefers)
