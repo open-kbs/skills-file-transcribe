@@ -78,4 +78,4 @@ Write the polished transcript to a separate file (e.g. `transcript_final.txt`) a
 
 ### Step 4: Offer next steps
 
-After presenting the final transcript, ask the user if they would like you to extract requirements, action items, or a summary from the conversation.
+After presenting the final transcript, ask the user if they would like you to generate a Requirement Specification document from the conversation.
