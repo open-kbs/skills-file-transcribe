@@ -6,7 +6,7 @@ Skills for [OpenKBS Studio](https://github.com/open-kbs/openkbs-studio) AI codin
 
 ### file-transcribe
 
-Transcribe audio/video files to text using Whisper via OpenKBS AI proxy. Supports MP4, MP3, WAV, OGG, MKV and other ffmpeg-compatible formats. Handles large files by splitting into chunks automatically.
+Transcribe audio/video files to text with Gemini via the OpenKBS AI proxy (or standalone with `GEMINI_API_KEY`). Languages auto-detected, optional speaker labels, timestamps and a vocabulary of names/terms. Supports MP4, MP3, WAV, OGG, MKV and other ffmpeg-compatible formats; long recordings are chunked automatically.
 
 **Install:**
 ```bash
