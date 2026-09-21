@@ -58,9 +58,9 @@ MODEL=gemini-3.5-transcribe TIMESTAMPS=1 node .claude/skills/file-transcribe/tra
 | `TRANSCRIBE_LANG` | auto | Language hint: `bg`, `en`, `de-DE` … |
 | `STYLE` | `smart` | `smart` = punctuation, formatting, fillers removed; `verbatim` = every word as spoken |
 | `SPEAKERS` | off | `1` → "Speaker N:" paragraphs |
-| `TIMESTAMPS` | off | `1` → `[hh:mm:ss]` per paragraph; with `MODEL=gemini-3.5-transcribe` also `<output>.words.json` (word-level start/end) |
+| `TIMESTAMPS` | off | `1` → `[hh:mm:ss]` at the start of each paragraph; with `MODEL=gemini-3.5-transcribe` also `<output>.words.json` (word-level start/end) |
 | `VOCAB` | — | Comma-separated names/terms to spell right (on gemini-3.5-transcribe not combinable with `SPEAKERS`/`TIMESTAMPS`) |
-| `CHUNK_SECONDS` | `1800` | Split point for long recordings |
+| `CHUNK_SECONDS` | `1800` | Split point for long recordings. Capped at 3600 (one proxy call must finish in 3 min); 1800 on gemini-3.5-transcribe with `SPEAKERS`/`TIMESTAMPS` (its per-call limit). Standalone default 1500 |
 | `BATCH` | `2` | Parallel chunk requests |
 
 ## How it works
@@ -74,7 +74,10 @@ MODEL=gemini-3.5-transcribe TIMESTAMPS=1 node .claude/skills/file-transcribe/tra
 
 Speaker labels are per chunk: in a long recording "Speaker 1" of chunk 2 is not
 guaranteed to be chunk 1's "Speaker 1". For multi-speaker files that must stay
-consistent, raise `CHUNK_SECONDS` so the recording goes in one request.
+consistent, keep the recording under one chunk (`CHUNK_SECONDS` up to 3600).
+On gemini-3.5-transcribe, `SPEAKERS`/`TIMESTAMPS` force verbatim style. A chunk
+that ends with a `finish_reason` warning was cut short by the model's output
+limit — lower `CHUNK_SECONDS`.
 
 ## Requirements
 

@@ -63,7 +63,10 @@ const mode = style === 'verbatim' || (dedicated && (speakers || timestamps)) ? '
 const vocabulary = (process.env.VOCAB || '').split(',').map(s => s.trim()).filter(Boolean);
 // Standalone sends the audio inline, so chunks must stay under ~14 MB: at
 // 64 kbps that is 25 minutes.
-const chunkSeconds = parseInt(process.env.CHUNK_SECONDS || (useProxy ? '1800' : '1500'), 10);
+// Caps: the proxy call must finish inside its 180 s; the dedicated model takes
+// 1 h per call, 30 min with speakers/timestamps.
+const MAX_CHUNK_SECONDS = dedicated && (speakers || timestamps) ? 1800 : 3600;
+const chunkSeconds = Math.min(MAX_CHUNK_SECONDS, parseInt(process.env.CHUNK_SECONDS || (useProxy ? '1800' : '1500'), 10) || 1800);
 const BATCH = parseInt(process.env.BATCH || '2', 10);
 
 const inputPath = process.argv[2];
@@ -180,7 +183,7 @@ function transcriptionPrompt() {
   ];
   if (language) lines.push(`The language of the recording is "${language}".`);
   if (speakers) lines.push('Label speakers as "Speaker 1:", "Speaker 2:", … numbered by first appearance; start a new paragraph whenever the speaker changes.');
-  if (timestamps) lines.push('Begin each paragraph with the time it starts in the audio, as [mm:ss] (or [h:mm:ss] past one hour).');
+  if (timestamps) lines.push('Begin each paragraph with the time it starts in the audio, as [mm:ss] (or [h:mm:ss] past one hour)' + (speakers ? ', before the speaker label: "[mm:ss] Speaker 1: text".' : '.'));
   if (!speakers && !timestamps) lines.push('Split the text into paragraphs at natural pauses and topic changes.');
   if (vocabulary.length) lines.push(`Names and terms that occur in the recording — spell them exactly like this: ${vocabulary.join(', ')}.`);
   return lines.join(' ');
@@ -208,9 +211,15 @@ async function transcribeViaGeminiChat(filePath) {
     throw new Error(msg);
   }
   const parsed = JSON.parse(bodyText);
-  if (parsed.promptFeedback?.blockReason) throw new Error(`Transcription blocked (${parsed.promptFeedback.blockReason})`);
   const parts = parsed.candidates?.[0]?.content?.parts || [];
-  return { text: parts.map(p => p.text || '').join('').trim(), words: [] };
+  const text = parts.map(p => p.text || '').join('').trim();
+  const blocked = parsed.promptFeedback?.blockReason;
+  const finish = parsed.candidates?.[0]?.finishReason;
+  if (!text && (blocked || (finish && finish !== 'STOP' && finish !== 'MAX_TOKENS'))) {
+    throw new Error(`Transcription blocked (${blocked ?? finish})`);
+  }
+  if (finish === 'MAX_TOKENS') console.log('    warning: chunk output hit the model limit — lower CHUNK_SECONDS');
+  return { text, words: [] };
 }
 
 // ── Proxy mode: the proxy fetches the clip by URL and bills the project ──
@@ -238,6 +247,7 @@ async function transcribeViaProxy(audioUrl, jwt) {
 
   totalCredits += Number(response.headers.get('x-openkbs-cost-credits')) || 0;
   const result = await response.json();
+  if (result.finish_reason) console.log(`    warning: chunk ended with ${result.finish_reason} — lower CHUNK_SECONDS`);
   return { text: result.text || '', words: Array.isArray(result.words) ? result.words : [] };
 }
 
@@ -321,9 +331,9 @@ function hms(sec) {
 // "[mm:ss]" / "[h:mm:ss]" at a line start → the same stamp shifted into the
 // whole recording's timeline.
 function shiftStamps(text, offsetSec) {
-  return text.replace(/^\[(\d{1,2}):(\d{2})(?::(\d{2}))?\]/gm, (_, a, b, c) => {
+  return text.replace(/^(Speaker \d+:\s*)?\[(\d{1,2}):(\d{2})(?::(\d{2}))?\]/gm, (_, label, a, b, c) => {
     const sec = c != null ? (+a) * 3600 + (+b) * 60 + (+c) : (+a) * 60 + (+b);
-    return `[${hms(sec + offsetSec)}]`;
+    return `${label ?? ''}[${hms(sec + offsetSec)}]`;
   });
 }
 
